@@ -4,7 +4,7 @@ import { Button, Card, Space, Input, Checkbox ,Popconfirm,message,Empty} from 'a
 import { PlusOutlined } from "@ant-design/icons"
 
 import { fetchTodos } from './mock';
-import {TodoItemType} from "./type/index"
+import {TodoItemType} from "./types/index"
 import { TodoItem } from './components/TodoItem';
 
 

@@ -1,4 +1,4 @@
-import { TodoItemType } from "../../type/index"
+import { TodoItemType } from "../../types/index"
 import { Button, Input, Popconfirm, message, Checkbox, Tooltip, InputRef } from 'antd';
 import "./index.css"
 import { ChangeEvent, useRef, useState } from "react";

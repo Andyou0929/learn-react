@@ -1,4 +1,4 @@
-import {TodoItemType} from "../type/index"
+import {TodoItemType} from "../types/index"
 export function fetchTodos(): TodoItemType[] {
   return [
     { id: 1, text: 'Learn React', completed: false, isUpdateState: false },

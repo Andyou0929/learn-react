@@ -1,6 +1,7 @@
 import { RouterType } from "./type";
 import {HomeOutlined} from "@ant-design/icons"
 import IconFont from "../components/Icon"
+// 添加声明式路由
 const routers: RouterType[] = [
 
   {

@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
-import {
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons';
 import { Menu } from 'antd';
 import "../../index.css"
 import routers from '../../../router';
-import { icons } from 'antd/es/image/PreviewGroup';
-import { MenuItemType, SubMenuType } from 'antd/es/menu/interface';
+import { SubMenuType } from 'antd/es/menu/interface';
+import { useNavigate } from 'react-router-dom';
 interface MyMenuProps {
-  collapsed: boolean;
 }
 
 const MyMenu: React.FC<MyMenuProps> = (props: MyMenuProps) => {
-  const { collapsed } = props;
-  const arr = [];
+  // 当前选择的menu的key
+  const [nowKey,setNowKey] = useState<string>();
+  // 路由跳转
+  const navigate = useNavigate();
   const getMenuItem = (router: any, index: number): SubMenuType => ({
     key: router.path,
     label: router.meta?.title,
@@ -23,16 +19,23 @@ const MyMenu: React.FC<MyMenuProps> = (props: MyMenuProps) => {
     children: router.children?.map((child: any, childIndex: number) => getMenuItem(child, childIndex))
   });
   return (
-   <div>
+    <div>
       <div className='logo-vertical'></div>
       <Menu
-      style={{minHeight: "89vh",maxHeight:"89vh",overflowX:"scroll"}}
-      theme="dark"
-      mode="inline"
-      defaultSelectedKeys={['1']}
-      items={routers[0]?.children?.slice(1).map((router, index) => getMenuItem(router, index))}
-    />
-   </div>
+        theme="dark"
+
+        style={{ minHeight: "89vh", maxHeight: "89vh", overflowX: "scroll" }}
+        mode="inline"
+        defaultSelectedKeys={['1']}
+        items={routers[0]?.children?.slice(1).map((router, index) => getMenuItem(router, index))}
+        onClick={(menuItem) => {
+          // 如果选中的是当前页面，不需要再次跳转
+          if(nowKey === menuItem.key) return
+          navigate(menuItem.key, { state: 123 })
+          setNowKey(menuItem.key);
+        }}
+      />
+    </div>
   );
 };
 

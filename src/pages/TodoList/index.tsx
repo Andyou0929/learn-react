@@ -1,33 +1,35 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import './index.css';
-import { Button, Card, Space, Input, Checkbox ,Popconfirm,message,Empty} from 'antd';
+import { Button, Card, Space, Input, Checkbox, Popconfirm, message, Empty } from 'antd';
 import { PlusOutlined } from "@ant-design/icons"
 
 import { fetchTodos } from '../../mock/index';
-import {TodoItemType} from "../../types/index"
-import { TodoItem } from '../../components/TodoItem';
+import { TodoItemType } from "../../types/index"
+import { TodoItem } from './components/TodoItem';
 
 
 
-function Footer(props: { todos: TodoItemType[] }) {
-  const { todos } = props;
+function Footer(props: { todos: TodoItemType[],selectedNum?:number }) {
+  const { todos,selectedNum } = props;
   return (
     <div className='footer'>
-      <span>Total/Completed: <span style={{ marginLeft: 10 }}> {todos.length}/{todos.filter(todo => todo.completed).length}</span></span>
+      <span>Total/Completed: <span style={{ marginLeft: 10 }}> {todos.length}/{selectedNum}</span></span>
     </div>
   )
 }
 
 function TodoList() {
-  const [todos, setTodos] = useState<TodoItemType[]>(fetchTodos())
-  const [todo, setTodo] = useState("")
-  const [checkAll, setCheckAll] = useState(false)
-  const [indeterminate, setIndeterminate] = useState(false)
+  const [todos, setTodos] = useState<TodoItemType[]>(fetchTodos());
+  const [todo, setTodo] = useState("");
+  const [checkAll, setCheckAll] = useState(false);
+  const [indeterminate, setIndeterminate] = useState(false);
+  const [selectedNum,setSelectedNum] = useState<number>();
   // 监听全选框的状态
   useEffect(() => {
-    setCheckAll(!todos.length || todos.every(todo => todo.completed))
-    const selectedTodoNum = todos.filter(todo => todo.completed).length
-    setIndeterminate(selectedTodoNum > 0 && selectedTodoNum < todos.length)
+    setCheckAll(!todos.length || todos.every(todo => todo.completed));
+    const selectedTodoNum = todos.filter(todo => todo.completed).length;
+    setIndeterminate(selectedTodoNum > 0 && selectedTodoNum < todos.length);
+    setSelectedNum(selectedTodoNum);
   }, [todos])
 
   // 输入框改变的回调
@@ -56,7 +58,7 @@ function TodoList() {
   function handlerDelete(id: number) {
     setTodos(todos.filter(todo => todo.id !== id))
   }
-  function handlerSetUpdate(id: number){
+  function handlerSetUpdate(id: number) {
     setTodos(todos.map(todo => todo.id === id ? { ...todo, isUpdateState: !todo.isUpdateState } : todo))
   }
   function handlerChange(id: number) {
@@ -82,12 +84,12 @@ function TodoList() {
   function handlerDeleteChecked() {
     setTodos(todos.filter(todo => !todo.completed))
   }
-  function handlerSetTodo(id:number,todoText:string){
-    setTodos(todos.map(todoItem => todoItem.id === id ? {...todoItem,text:todoText} : todoItem))
+  function handlerSetTodo(id: number, todoText: string) {
+    setTodos(todos.map(todoItem => todoItem.id === id ? { ...todoItem, text: todoText } : todoItem));
   }
   return (
-    <div className="todo-list">
-      <Card title="TodoList" className='card' hoverable style={{ width: 600 }}><ul>
+    <div className="todo-list"> 
+      <Card title="TodoList" className='card' hoverable >
         <Space.Compact style={{ width: '100%' }}>
           <Input className='todo-input'
             placeholder="please your input todo"
@@ -98,48 +100,50 @@ function TodoList() {
           />
           <Button type="primary" icon={<PlusOutlined />} onClick={handlerPlus}>plus</Button>
         </Space.Compact>
-        <li>
+        <div className='header'>
           <div>
             <Checkbox indeterminate={indeterminate} onChange={handlerChangeAll} checked={checkAll}>
               <div className='todo-text'>{checkAll ? "unCheck All" : "Check all"}</div>
             </Checkbox>
           </div>
           <Popconfirm
-          title="Delete all selected todo"
-          description="Are you sure to delete all selected todo?"
-          onConfirm={() => {
-            handlerDeleteChecked()
-            message.success("successfully delete！")
-          }}
-          onCancel={() => {
-            message.warning("undelete ok！")
-          }}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button variant="text" color='danger' disabled={!checkAll && !indeterminate}>delete checked</Button>
-        </Popconfirm>
-        </li>
-        {!todos.length && <Empty/>}
-        {
-          todos.map((todo,index) => (
-            // <TodoItem {...todo}/>
-            <TodoItem
-              key={todo.id}
-              id={todo.id}
-              index={index}
-              text={todo.text}
-              completed={todo.completed}
-              isUpdateState={todo.isUpdateState}
-              onDelete={handlerDelete}
-              onchange={handlerChange}
-              onSetUpdate={handlerSetUpdate}
-              onSetTodo={handlerSetTodo}
-            />
-          ))
-        }
-      </ul>
-        <Footer todos={todos} />
+            title="Delete all selected todo"
+            description={`Are you sure to delete selected ${selectedNum} todos?`}
+            onConfirm={() => {
+              handlerDeleteChecked()
+              message.success("successfully delete！")
+            }}
+            onCancel={() => {
+              message.warning("undelete ok！")
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button variant="text" color='danger' disabled={!checkAll && !indeterminate}>delete checked</Button>
+          </Popconfirm>
+        </div>
+        <ul>
+
+          {!todos.length && <Empty />}
+          {
+            todos.map((todo, index) => (
+              // <TodoItem {...todo}/>
+              <TodoItem
+                key={todo.id}
+                id={todo.id}
+                index={index}
+                text={todo.text}
+                completed={todo.completed}
+                isUpdateState={todo.isUpdateState}
+                onDelete={handlerDelete}
+                onchange={handlerChange}
+                onSetUpdate={handlerSetUpdate}
+                onSetTodo={handlerSetTodo}
+              />
+            ))
+          }
+        </ul>
+        <Footer todos={todos} selectedNum={selectedNum}/>
       </Card>
 
     </div>

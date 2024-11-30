@@ -1,8 +1,0 @@
-.todo-text{
-  display: inline-block;
-  max-width: 330px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-size: 12px;
-}

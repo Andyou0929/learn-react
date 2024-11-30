@@ -2,6 +2,11 @@ import { useRoutes, Navigate } from "react-router-dom";
 import React from "react"
 import routers from "../../router"
 import { RouterType } from "../../router/type";
+/**
+ * @description: 构造路由，生成路由器
+ * @param {RouterType} routers 路由配置项
+ * @return {*}
+ */
 function generateRouter(routers:RouterType[]):RouterType[] {
   // @ts-ignore 需要关闭ts校验，不然会报错，可能会返回undefined
   return  routers.map(item => {
